@@ -100,7 +100,7 @@ describe('POST /users', function() {
       .expect(200)
       .end(function(err, res) {
         if (err) return done(err);
-        done();
+        return done();
       });
   });
 });
@@ -110,7 +110,7 @@ You can also use promises:
 
 ```js
 describe('GET /users', function() {
-  it('responds with json', function() {
+  it('responds with json', function(done) {
     return request(app)
       .get('/users')
       .set('Accept', 'application/json')
@@ -118,7 +118,9 @@ describe('GET /users', function() {
       .expect(200)
       .then(response => {
           assert(response.body.email, 'foo@bar.com')
+          done();
       })
+      .catch(err => done(err))
   });
 });
 ```
