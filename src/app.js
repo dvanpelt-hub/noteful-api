@@ -3,9 +3,9 @@ const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
 const helmet = require("helmet");
-const { NODE_ENV } = require("./config");
 const folderRouter = require("./folder/folder-router");
 const noteRouter = require("./note/note-router");
+const { NODE_ENV } = require("./config");
 const errorHandler = require("./errorHandler");
 
 const app = express();
@@ -16,8 +16,16 @@ app.use(
   })
 );
 
-app.use(helmet());
 app.use(cors());
+app.use(helmet());
+
+app.use(errorHandler);
+app.use("/api/folders", folderRouter);
+app.use("/api/notes", noteRouter);
+
+app.get("/", (req, res) => {
+  res.send("Hello, world!");
+});
 
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -27,14 +35,5 @@ app.use(function (req, res, next) {
   );
   next();
 });
-
-app.use(errorHandler);
-
-app.get("/", (req, res) => {
-  res.send("Hello, world!");
-});
-
-app.use("/api/folder", folderRouter);
-app.use("/api/note", noteRouter);
 
 module.exports = app;
